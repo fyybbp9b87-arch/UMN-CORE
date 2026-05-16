@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMN CORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050506;
+  --surface: #0d0d10;
+  --surface2: #141418;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --red: #ff3b3b;
+  --green: #00e55c;
+  --amber: #ffaa00;
+  --blue: #4499ff;
+  --text: #eceef2;
+  --muted: #5a5d6a;
+  --muted2: #8b8f9e;
+  --red-dim: rgba(255,59,59,0.12);
+  --green-dim: rgba(0,229,92,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 14px;
+}
+
+/* SCANLINE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-mark::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.logo-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--text);
+}
+
+.logo-text span {
+  color: var(--red);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.status-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted2);
+  letter-spacing: 1px;
+}
+
+/* WEATHER BAR */
+#weather-bar {
+  display: none;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 20px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--muted2);
+  flex-shrink: 0;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+#weather-bar.visible { display: flex; }
+
+.weather-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.weather-temp {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.weather-sep {
+  color: var(--border2);
+}
+
+.weather-close {
+  margin-left: auto;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 16px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.weather-close:hover { color: var(--text); }
+
+/* NEWS BAR */
+#news-bar {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  max-height: 220px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  animation: slideDown 0.3s ease;
+}
+
+#news-bar.visible { display: flex; }
+
+.news-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.news-header-bar span {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--blue);
+}
+
+.news-item {
+  padding: 9px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.news-item:hover { background: rgba(255,255,255,0.02); }
+.news-item:last-child { border-bottom: none; }
+
+.news-title {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.news-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* CHAT */
+#chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+
+#chat::-webkit-scrollbar { width: 4px; }
+#chat::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.msg-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.msg-row.user { align-items: flex-end; }
+.msg-row.ai { align-items: flex-start; }
+
+.msg-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.msg {
+  max-width: 78%;
+  padding: 12px 16px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 13.5px;
+  font-family: 'Syne', sans-serif;
+  position: relative;
+}
+
+.msg.user {
+  background: var(--red-dim);
+  border: 1px solid rgba(255,59,59,0.25);
+  border-radius: 14px 14px 2px 14px;
+  color: var(--text);
+}
+
+.msg.ai {
+  background: var(--green-dim);
+  border: 1px solid rgba(0,229,92,0.2);
+  border-radius: 14px 14px 14px 2px;
+  color: var(--text);
+}
+
+.msg.system {
+  background: rgba(68,153,255,0.07);
+  border: 1px solid rgba(68,153,255,0.2);
+  border-radius: 10px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--muted2);
+  align-self: center;
+  max-width: 90%;
+  text-align: center;
+}
+
+.msg img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  display: block;
+}
+
+/* THINKING INDICATOR */
+.thinking {
+  display: flex;
+  gap: 5px;
+  padding: 14px 16px;
+  background: var(--green-dim);
+  border: 1px solid rgba(0,229,92,0.2);
+  border-radius: 14px 14px 14px 2px;
+  align-self: flex-start;
+}
+
+.thinking span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: bounce 1.2s ease-in-out infinite;
+}
+
+.thinking span:nth-child(2) { animation-delay: 0.2s; }
+.thinking span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* BOTTOM */
+#bottom {
+  padding: 14px 16px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  transition: border-color 0.2s;
+}
+
+.input-wrap:focus-within {
+  border-color: rgba(255,59,59,0.4);
+}
+
+textarea {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  resize: none;
+  line-height: 1.5;
+  max-height: 120px;
+}
+
+textarea::placeholder { color: var(--muted); }
+
+#send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: var(--red);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+#send-btn:hover { opacity: 0.85; }
+#send-btn:active { transform: scale(0.94); }
+
+#send-btn svg { width: 16px; height: 16px; fill: white; }
+
+/* ACTION BUTTONS */
+.action-btns {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.action-btns::-webkit-scrollbar { display: none; }
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--muted2);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.action-btn .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.action-btn:hover {
+  border-color: var(--border2);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+}
+
+.btn-groq .dot { background: var(--red); }
+.btn-groq:hover { border-color: rgba(255,59,59,0.4); color: var(--red); }
+.btn-groq.active { border-color: rgba(255,59,59,0.5); color: var(--red); background: var(--red-dim); }
+
+.btn-forge .dot { background: var(--green); }
+.btn-forge:hover { border-color: rgba(0,229,92,0.4); color: var(--green); }
+
+.btn-weather .dot { background: var(--amber); }
+.btn-weather:hover { border-color: rgba(255,170,0,0.4); color: var(--amber); }
+.btn-weather.active { border-color: rgba(255,170,0,0.5); color: var(--amber); background: rgba(255,170,0,0.08); }
+
+.btn-news .dot { background: var(--blue); }
+.btn-news:hover { border-color: rgba(68,153,255,0.4); color: var(--blue); }
+.btn-news.active { border-color: rgba(68,153,255,0.5); color: var(--blue); background: rgba(68,153,255,0.08); }
+
+/* MODE BADGE */
+.mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--red-dim);
+  border: 1px solid rgba(255,59,59,0.3);
+  color: var(--red);
+  align-self: flex-start;
+  margin-left: 4px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo-mark"></div>
+    <span class="logo-text">UMN <span>CORE</span></span>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="status-label">ONLINE</span>
+  </div>
+</header>
+
+<!-- WEATHER PANEL -->
+<div id="weather-bar">
+  <div class="weather-item">
+    <span class="weather-temp" id="w-temp">—°</span>
+  </div>
+  <span class="weather-sep">|</span>
+  <div class="weather-item" id="w-desc">Loading...</div>
+  <span class="weather-sep">|</span>
+  <div class="weather-item">💧 <span id="w-humidity">—</span>%</div>
+  <span class="weather-sep">|</span>
+  <div class="weather-item">💨 <span id="w-wind">—</span> km/h</div>
+  <span class="weather-sep">|</span>
+  <div class="weather-item" id="w-location" style="color:var(--muted)">—</div>
+  <button class="weather-close" onclick="closeWeather()">×</button>
+</div>
+
+<!-- NEWS PANEL -->
+<div id="news-bar">
+  <div class="news-header-bar">
+    <span>// LIVE FEED</span>
+    <button class="weather-close" onclick="closeNews()">×</button>
+  </div>
+  <div id="news-list"></div>
+</div>
+
+<div id="chat">
+  <div class="msg system">// UMN CORE INITIALISED — SELECT MODE BELOW</div>
+</div>
+
+<div id="bottom">
+  <div class="input-wrap">
+    <textarea id="input" rows="1" placeholder="Transmit to UMN Core..."></textarea>
+    <button id="send-btn" title="Send">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="action-btns">
+    <button class="action-btn btn-groq active" id="btn-groq" onclick="setMode('groq')">
+      <span class="dot"></span>GROQ CORE
+    </button>
+    <button class="action-btn btn-forge" id="btn-forge" onclick="setMode('forge')">
+      <span class="dot"></span>MELON FORGE
+    </button>
+    <button class="action-btn btn-weather" id="btn-weather" onclick="toggleWeather()">
+      <span class="dot"></span>WEATHER
+    </button>
+    <button class="action-btn btn-news" id="btn-news" onclick="toggleNews()">
+      <span class="dot"></span>NEWS FEED
+    </button>
+  </div>
+</div>
+
+<script>
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('input');
+
+let messages = [];
+let currentMode = 'groq';
+
+// Auto-resize textarea
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+});
+
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+});
+
+document.getElementById('send-btn').onclick = handleSend;
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'groq') document.getElementById('btn-groq').classList.add('active');
+  if (mode === 'forge') document.getElementById('btn-forge').classList.add('active');
+}
+
+function handleSend() {
+  if (currentMode === 'groq') sendGroq();
+  else if (currentMode === 'forge') sendForge();
+}
+
+/* ---- ADD MESSAGE ---- */
+function addMsg(content, type) {
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + (type === 'user' ? 'user' : type === 'ai' ? 'ai' : '');
+
+  if (type === 'system') {
+    const m = document.createElement('div');
+    m.className = 'msg system';
+    m.textContent = content;
+    chatEl.appendChild(m);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return;
+  }
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = type === 'user' ? 'YOU' : 'CORE';
+
+  const m = document.createElement('div');
+  m.className = 'msg ' + type;
+  m.innerHTML = content;
+
+  row.appendChild(label);
+  row.appendChild(m);
+  chatEl.appendChild(row);
+  chatEl.scrollTop = chatEl.scrollHeight;
+  return m;
+}
+
+function addThinking() {
+  const t = document.createElement('div');
+  t.className = 'thinking';
+  t.id = 'thinking';
+  t.innerHTML = '<span></span><span></span><span></span>';
+  chatEl.appendChild(t);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function removeThinking() {
+  const t = document.getElementById('thinking');
+  if (t) t.remove();
+}
+
+/* ---- GROQ CHAT ---- */
+async function sendGroq() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  messages.push({ role: 'user', content: text });
+  addThinking();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages })
+    });
+    const data = await res.json();
+    removeThinking();
+    const reply = data.reply || data.error || 'No response.';
+    addMsg(reply, 'ai');
+    messages.push({ role: 'assistant', content: reply });
+  } catch (err) {
+    removeThinking();
+    addMsg('// ERROR: ' + err.message, 'ai');
+  }
+}
+
+/* ---- IMAGE (MELON FORGE) ---- */
+function sendForge() {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  addMsg(text, 'user');
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent('red green neon cyberpunk UMN style ' + text);
+  addMsg(`<img src="${url}" alt="${text}">`, 'ai');
+}
+
+/* ---- WEATHER ---- */
+let weatherLoaded = false;
+let weatherVisible = false;
+
+function toggleWeather() {
+  const bar = document.getElementById('weather-bar');
+  weatherVisible = !weatherVisible;
+  bar.classList.toggle('visible', weatherVisible);
+  document.getElementById('btn-weather').classList.toggle('active', weatherVisible);
+  if (weatherVisible && !weatherLoaded) fetchWeather();
+}
+
+function closeWeather() {
+  weatherVisible = false;
+  document.getElementById('weather-bar').classList.remove('visible');
+  document.getElementById('btn-weather').classList.remove('active');
+}
+
+async function fetchWeather() {
+  try {
+    // Get user's coords
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const c = data.current;
+      document.getElementById('w-temp').textContent = Math.round(c.temperature_2m) + '°C';
+      document.getElementById('w-desc').textContent = weatherDesc(c.weather_code);
+      document.getElementById('w-humidity').textContent = c.relative_humidity_2m;
+      document.getElementById('w-wind').textContent = Math.round(c.wind_speed_10m);
+
+      // Reverse geocode for city
+      const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const geoData = await geo.json();
+      const city = geoData.address?.city || geoData.address?.town || geoData.address?.village || '';
+      document.getElementById('w-location').textContent = city;
+      weatherLoaded = true;
+    }, () => {
+      document.getElementById('w-desc').textContent = 'Location access denied';
+    });
+  } catch (e) {
+    document.getElementById('w-desc').textContent = 'Weather unavailable';
+  }
+}
+
+function weatherDesc(code) {
+  if (code === 0) return '☀️ Clear sky';
+  if (code <= 2) return '⛅ Partly cloudy';
+  if (code === 3) return '☁️ Overcast';
+  if (code <= 49) return '🌫️ Foggy';
+  if (code <= 59) return '🌦️ Drizzle';
+  if (code <= 69) return '🌧️ Rain';
+  if (code <= 79) return '❄️ Snow';
+  if (code <= 82) return '🌧️ Rain showers';
+  if (code <= 86) return '🌨️ Snow showers';
+  if (code <= 99) return '⛈️ Thunderstorm';
+  return '🌡️ Unknown';
+}
+
+/* ---- NEWS ---- */
+let newsVisible = false;
+let newsLoaded = false;
+
+function toggleNews() {
+  const bar = document.getElementById('news-bar');
+  newsVisible = !newsVisible;
+  bar.classList.toggle('visible', newsVisible);
+  document.getElementById('btn-news').classList.toggle('active', newsVisible);
+  if (newsVisible && !newsLoaded) fetchNews();
+}
+
+function closeNews() {
+  newsVisible = false;
+  document.getElementById('news-bar').classList.remove('visible');
+  document.getElementById('btn-news').classList.remove('active');
+}
+
+async function fetchNews() {
+  const list = document.getElementById('news-list');
+  list.innerHTML = '<div class="news-item"><div class="news-meta">Loading feed...</div></div>';
+  try {
+    // Calls your own backend /api/news which uses NEWS_API_KEY from env
+    const res = await fetch('/api/news');
+    const data = await res.json();
+    const articles = data.articles || [];
+    if (!articles.length) {
+      list.innerHTML = '<div class="news-item"><div class="news-meta">No articles found.</div></div>';
+      return;
+    }
+    list.innerHTML = '';
+    articles.slice(0, 8).forEach(a => {
+      const item = document.createElement('div');
+      item.className = 'news-item';
+      item.innerHTML = `
+        <div class="news-title">${escHtml(a.title)}</div>
+        <div class="news-meta">${escHtml(a.source?.name || '')} · ${timeAgo(a.publishedAt)}</div>
+      `;
+      item.onclick = () => {
+        if (a.url) window.open(a.url, '_blank');
+      };
+      list.appendChild(item);
+    });
+    newsLoaded = true;
+  } catch (e) {
+    list.innerHTML = `<div class="news-item"><div class="news-meta">// ERROR: ${e.message}</div></div>`;
+  }
+}
+
+function escHtml(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function timeAgo(iso) {
+  if (!iso) return '';
+  const diff = (Date.now() - new Date(iso)) / 1000 / 60;
+  if (diff < 60) return Math.round(diff) + 'm ago';
+  if (diff < 1440) return Math.round(diff / 60) + 'h ago';
+  return Math.round(diff / 1440) + 'd ago';
+}
+</script>
+</body>
+</html>
