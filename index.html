@@ -7,24 +7,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #050506;
-  --surface: #0d0d10;
-  --surface2: #141418;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.12);
-  --red: #ff3b3b;
-  --green: #00e55c;
+  --bg: #020203;
+  --surface: #0a0a0d;
+  --surface2: #111115;
+  --border: rgba(255,255,255,0.05);
+  --border2: rgba(255,255,255,0.10);
+  --red: #ff2a2a;
+  --green: #00ff66;
   --amber: #ffaa00;
-  --blue: #4499ff;
-  --text: #eceef2;
-  --muted: #5a5d6a;
-  --muted2: #8b8f9e;
-  --red-dim: rgba(255,59,59,0.12);
-  --green-dim: rgba(0,229,92,0.08);
+  --blue: #3388ff;
+  --purple: #bb44ff;
+  --teal: #00ffcc;
+  --pink: #ff44aa;
+  --orange: #ff6600;
+  --text: #dde0e8;
+  --muted: #454852;
+  --muted2: #7a7e8e;
+  --red-dim: rgba(255,42,42,0.10);
+  --green-dim: rgba(0,255,102,0.06);
+  --purple-dim: rgba(187,68,255,0.10);
+  --teal-dim: rgba(0,255,204,0.07);
+  --pink-dim: rgba(255,68,170,0.08);
+  --amber-dim: rgba(255,170,0,0.08);
+  --blue-dim: rgba(51,136,255,0.08);
 }
-
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body {
   font-family: 'Syne', sans-serif;
   background: var(--bg);
@@ -35,437 +42,255 @@ body {
   overflow: hidden;
   font-size: 14px;
 }
-
-/* SCANLINE OVERLAY */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.03) 2px,
-    rgba(0,0,0,0.03) 4px
-  );
-  pointer-events: none;
-  z-index: 999;
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+  pointer-events: none; z-index: 9998;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.55) 100%);
+  pointer-events: none; z-index: 9997;
+}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+@keyframes slideDown { from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1} }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1} }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1}20%,24%,55%{opacity:0.93} }
+@keyframes glitch {
+  0%{clip-path:inset(0 0 100% 0)}10%{clip-path:inset(30% 0 55% 0)}20%{clip-path:inset(70% 0 5% 0)}
+  30%{clip-path:inset(5% 0 80% 0)}40%{clip-path:inset(50% 0 30% 0)}50%{clip-path:inset(15% 0 65% 0)}
+  60%{clip-path:inset(85% 0 2% 0)}70%{clip-path:inset(40% 0 40% 0)}80%{clip-path:inset(60% 0 20% 0)}
+  90%{clip-path:inset(10% 0 75% 0)}100%{clip-path:inset(0 0 100% 0)}
 }
 
 /* HEADER */
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  height: 52px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px; height:50px;
+  background:var(--surface); border-bottom:1px solid var(--border);
+  flex-shrink:0; animation:flicker 9s infinite; position:relative;
 }
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+header::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,255,102,0.35),transparent);
 }
-
+.header-left { display:flex; align-items:center; gap:10px; }
 .logo-mark {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--red);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  width:26px; height:26px; border:1.5px solid var(--red);
+  display:flex; align-items:center; justify-content:center; position:relative;
 }
-
+.logo-mark::before { content:''; position:absolute; inset:-3px; border:1px solid rgba(255,42,42,0.18); }
 .logo-mark::after {
-  content: '';
-  width: 8px;
-  height: 8px;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
+  content:''; width:7px; height:7px;
+  background:var(--green); box-shadow:0 0 10px var(--green),0 0 20px rgba(0,255,102,0.35);
 }
-
+.logo-wrap { position:relative; }
 .logo-text {
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 4px;
-  color: var(--text);
+  font-family:'Space Mono',monospace; font-size:12px;
+  letter-spacing:5px; color:var(--text);
+  text-shadow:0 0 8px rgba(255,255,255,0.08);
 }
-
-.logo-text span {
-  color: var(--red);
+.logo-text span { color:var(--red); text-shadow:0 0 8px rgba(255,42,42,0.5); }
+.logo-ghost {
+  position:absolute; top:0; left:0;
+  font-family:'Space Mono',monospace; font-size:12px;
+  letter-spacing:5px; pointer-events:none; white-space:nowrap;
 }
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.logo-ghost.r { color:var(--red); animation:glitch 8s infinite; transform:translateX(-2px); opacity:0.5; }
+.logo-ghost.t { color:var(--teal); animation:glitch 8s infinite 0.25s; transform:translateX(2px); opacity:0.35; }
+.header-center {
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-family:'Space Mono',monospace; font-size:9px;
+  letter-spacing:3px; color:var(--muted);
 }
-
+.header-right { display:flex; align-items:center; gap:8px; }
 .status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-  animation: pulse 2s ease-in-out infinite;
+  width:5px; height:5px; border-radius:50%;
+  background:var(--green); box-shadow:0 0 8px var(--green);
+  animation:pulse 1.5s ease-in-out infinite;
 }
+.status-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--green); letter-spacing:2px; text-shadow:0 0 8px rgba(0,255,102,0.45); }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
+/* PANELS */
+.panel { display:none; background:var(--surface2); border-bottom:1px solid var(--border); flex-shrink:0; animation:slideDown 0.22s ease; }
+.panel.visible { display:flex; }
+.panel-col { flex-direction:column; }
+.panel-header { display:flex; align-items:center; justify-content:space-between; padding:7px 18px; border-bottom:1px solid var(--border); }
+.panel-header span { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:3px; }
+.panel-close { background:none; border:none; color:var(--muted); font-size:15px; cursor:pointer; padding:2px 4px; transition:color 0.15s; }
+.panel-close:hover { color:var(--red); }
 
-.status-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--muted2);
-  letter-spacing: 1px;
-}
+/* WEATHER */
+#weather-bar { align-items:center; gap:14px; padding:9px 18px; font-family:'Space Mono',monospace; font-size:11px; color:var(--muted2); flex-wrap:wrap; }
+.weather-temp { font-size:20px; font-weight:700; color:var(--amber); text-shadow:0 0 10px rgba(255,170,0,0.35); }
+.weather-sep { color:var(--border2); }
+.weather-item { display:flex; align-items:center; gap:5px; }
 
-/* WEATHER BAR */
-#weather-bar {
-  display: none;
-  align-items: center;
-  gap: 16px;
-  padding: 8px 20px;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--muted2);
-  flex-shrink: 0;
-  animation: slideDown 0.3s ease;
-}
+/* NEWS */
+#news-bar { flex-direction:column; max-height:210px; overflow-y:auto; }
+#news-bar .panel-header span { color:var(--blue); }
+.news-item { padding:8px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.12s; }
+.news-item:hover { background:rgba(51,136,255,0.04); }
+.news-item:last-child { border-bottom:none; }
+.news-title { font-size:11.5px; color:var(--text); line-height:1.4; margin-bottom:2px; }
+.news-meta { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
 
-@keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
+/* EARTHQUAKES */
+#quake-bar { flex-direction:column; max-height:200px; overflow-y:auto; }
+#quake-bar .panel-header span { color:var(--red); }
+.quake-item { padding:7px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; cursor:pointer; transition:background 0.12s; }
+.quake-item:hover { background:rgba(255,42,42,0.04); }
+.quake-item:last-child { border-bottom:none; }
+.quake-mag { font-family:'Space Mono',monospace; font-size:13px; font-weight:700; min-width:34px; }
+.mag-low { color:var(--green); text-shadow:0 0 5px rgba(0,255,102,0.35); }
+.mag-mid { color:var(--amber); text-shadow:0 0 5px rgba(255,170,0,0.35); }
+.mag-high { color:var(--red); text-shadow:0 0 8px rgba(255,42,42,0.6); animation:pulse 0.9s infinite; }
+.quake-info { flex:1; }
+.quake-place { font-size:11px; color:var(--text); }
+.quake-meta { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); margin-top:1px; }
+.quake-depth { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted2); min-width:55px; text-align:right; }
 
-#weather-bar.visible { display: flex; }
+/* DICTIONARY */
+#dict-bar { flex-direction:column; max-height:240px; overflow-y:auto; }
+#dict-bar .panel-header span { color:var(--teal); }
+.dict-search { display:flex; gap:8px; padding:9px 18px; border-bottom:1px solid var(--border); }
+.dict-input { flex:1; background:var(--surface); border:1px solid var(--border2); border-radius:4px; padding:6px 10px; color:var(--text); font-family:'Space Mono',monospace; font-size:11px; outline:none; transition:border-color 0.2s; }
+.dict-input:focus { border-color:var(--teal); box-shadow:0 0 8px rgba(0,255,204,0.12); }
+.dict-go { padding:6px 14px; background:var(--teal-dim); border:1px solid rgba(0,255,204,0.35); border-radius:4px; color:var(--teal); font-family:'Space Mono',monospace; font-size:9px; cursor:pointer; letter-spacing:1px; transition:all 0.15s; }
+.dict-go:hover { background:rgba(0,255,204,0.14); }
+#dict-result { padding:12px 18px; font-size:12px; line-height:1.7; }
+.dict-word { font-size:18px; font-weight:800; color:var(--teal); text-shadow:0 0 10px rgba(0,255,204,0.25); }
+.dict-phonetic { font-family:'Space Mono',monospace; font-size:10px; color:var(--muted); margin-bottom:6px; }
+.dict-pos { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--teal); margin-top:8px; margin-bottom:3px; }
+.dict-def { color:var(--text); font-size:11.5px; margin-bottom:2px; }
+.dict-example { color:var(--muted2); font-style:italic; font-size:11px; margin-left:10px; }
 
-.weather-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+/* QUOTE */
+#quote-bar { flex-direction:column; padding:12px 18px; gap:6px; }
 
-.weather-temp {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--amber);
-}
+/* TRIVIA */
+#trivia-bar { flex-direction:column; }
+#trivia-bar .panel-header span { color:var(--pink); }
+.trivia-opt { padding:7px 12px; border:1px solid var(--border2); border-radius:6px; background:var(--surface); color:var(--muted2); font-family:'Space Mono',monospace; font-size:10px; cursor:pointer; text-align:left; transition:all 0.12s; width:100%; margin-bottom:5px; }
+.trivia-opt:hover { background:var(--pink-dim); border-color:rgba(255,68,170,0.4); color:var(--pink); }
+.trivia-opt.correct { background:rgba(0,255,102,0.08); border-color:var(--green); color:var(--green); }
+.trivia-opt.wrong { background:var(--red-dim); border-color:var(--red); color:var(--red); }
+.trivia-next { padding:6px 14px; background:var(--pink-dim); border:1px solid rgba(255,68,170,0.4); border-radius:6px; color:var(--pink); font-family:'Space Mono',monospace; font-size:9px; cursor:pointer; display:none; letter-spacing:1px; margin-top:4px; }
+.trivia-next:hover { background:rgba(255,68,170,0.15); }
 
-.weather-sep {
-  color: var(--border2);
-}
+/* BORED */
+#bored-bar { align-items:center; gap:12px; padding:10px 18px; flex-wrap:wrap; }
 
-.weather-close {
-  margin-left: auto;
-  cursor: pointer;
-  color: var(--muted);
-  font-size: 16px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 2px 6px;
-}
+/* WORLD CLOCK */
+#clock-bar { flex-direction:column; }
+#clock-bar .panel-header span { color:var(--green); }
+.clock-grid { display:flex; overflow-x:auto; scrollbar-width:none; }
+.clock-grid::-webkit-scrollbar { display:none; }
+.clock-zone { flex:1; min-width:90px; padding:10px 14px; border-right:1px solid var(--border); text-align:center; }
+.clock-zone:last-child { border-right:none; }
+.clock-city { font-family:'Space Mono',monospace; font-size:7px; letter-spacing:2px; color:var(--muted); margin-bottom:4px; }
+.clock-time { font-family:'Space Mono',monospace; font-size:16px; font-weight:700; color:var(--green); text-shadow:0 0 10px rgba(0,255,102,0.35); letter-spacing:1px; }
+.clock-date { font-family:'Space Mono',monospace; font-size:7px; color:var(--muted); margin-top:2px; }
 
-.weather-close:hover { color: var(--text); }
+/* COUNTDOWN */
+#countdown-bar { flex-direction:column; }
+#countdown-bar .panel-header span { color:var(--orange); }
+.countdown-setup { display:flex; gap:8px; padding:9px 18px; border-bottom:1px solid var(--border); flex-wrap:wrap; align-items:center; }
+.cd-input { width:50px; background:var(--surface); border:1px solid var(--border2); border-radius:4px; padding:5px 8px; color:var(--text); font-family:'Space Mono',monospace; font-size:12px; outline:none; text-align:center; }
+.cd-input:focus { border-color:var(--orange); }
+.cd-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--muted); }
+.cd-btn { padding:6px 12px; border-radius:4px; font-family:'Space Mono',monospace; font-size:9px; cursor:pointer; letter-spacing:1px; border:1px solid; transition:all 0.15s; }
+.cd-start { background:var(--amber-dim); border-color:rgba(255,170,0,0.4); color:var(--amber); }
+.cd-start:hover { background:rgba(255,170,0,0.14); }
+.cd-reset { background:none; border-color:var(--border2); color:var(--muted2); }
+.cd-reset:hover { color:var(--red); border-color:rgba(255,42,42,0.4); }
+.countdown-display { display:flex; align-items:center; justify-content:center; gap:4px; padding:14px 18px; }
+.cd-seg { text-align:center; }
+.cd-num { font-family:'Space Mono',monospace; font-size:32px; font-weight:700; color:var(--orange); text-shadow:0 0 15px rgba(255,102,0,0.45); line-height:1; }
+.cd-num.done { color:var(--red); animation:pulse 0.5s infinite; }
+.cd-unit { font-family:'Space Mono',monospace; font-size:8px; color:var(--muted); letter-spacing:1px; margin-top:2px; }
+.cd-colon { font-family:'Space Mono',monospace; font-size:28px; color:var(--muted); padding:0 4px; line-height:1.1; animation:pulse 1s infinite; }
 
-/* NEWS BAR */
-#news-bar {
-  display: none;
-  flex-direction: column;
-  gap: 0;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  max-height: 220px;
-  overflow-y: auto;
-  flex-shrink: 0;
-  animation: slideDown 0.3s ease;
-}
-
-#news-bar.visible { display: flex; }
-
-.news-header-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.news-header-bar span {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--blue);
-}
-
-.news-item {
-  padding: 9px 20px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.news-item:hover { background: rgba(255,255,255,0.02); }
-.news-item:last-child { border-bottom: none; }
-
-.news-title {
-  font-size: 12px;
-  color: var(--text);
-  line-height: 1.4;
-  margin-bottom: 2px;
-}
-
-.news-meta {
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  color: var(--muted);
-}
+/* SEARCH */
+#search-bar { flex-direction:column; }
+#search-bar .panel-header span { color:var(--blue); }
+.search-row { display:flex; gap:8px; padding:9px 18px; border-bottom:1px solid var(--border); }
+.search-input { flex:1; background:var(--surface); border:1px solid var(--border2); border-radius:4px; padding:7px 12px; color:var(--text); font-family:'Space Mono',monospace; font-size:11px; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--blue); box-shadow:0 0 8px rgba(51,136,255,0.12); }
+.search-go { padding:7px 14px; background:var(--blue-dim); border:1px solid rgba(51,136,255,0.35); border-radius:4px; color:var(--blue); font-family:'Space Mono',monospace; font-size:9px; cursor:pointer; letter-spacing:1px; transition:all 0.15s; }
+.search-go:hover { background:rgba(51,136,255,0.14); }
+#search-results { max-height:200px; overflow-y:auto; }
+.sr-item { padding:8px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.12s; }
+.sr-item:hover { background:var(--blue-dim); }
+.sr-item:last-child { border-bottom:none; }
+.sr-title { font-size:11.5px; color:var(--text); margin-bottom:2px; line-height:1.3; }
+.sr-url { font-family:'Space Mono',monospace; font-size:9px; color:var(--blue); margin-bottom:2px; }
+.sr-snippet { font-size:10.5px; color:var(--muted2); line-height:1.4; }
 
 /* CHAT */
-#chat {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
-}
-
-#chat::-webkit-scrollbar { width: 4px; }
-#chat::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-.msg-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.msg-row.user { align-items: flex-end; }
-.msg-row.ai { align-items: flex-start; }
-
-.msg-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  padding: 0 4px;
-}
-
-.msg {
-  max-width: 78%;
-  padding: 12px 16px;
-  line-height: 1.65;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-size: 13.5px;
-  font-family: 'Syne', sans-serif;
-  position: relative;
-}
-
-.msg.user {
-  background: var(--red-dim);
-  border: 1px solid rgba(255,59,59,0.25);
-  border-radius: 14px 14px 2px 14px;
-  color: var(--text);
-}
-
-.msg.ai {
-  background: var(--green-dim);
-  border: 1px solid rgba(0,229,92,0.2);
-  border-radius: 14px 14px 14px 2px;
-  color: var(--text);
-}
-
-.msg.system {
-  background: rgba(68,153,255,0.07);
-  border: 1px solid rgba(68,153,255,0.2);
-  border-radius: 10px;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: var(--muted2);
-  align-self: center;
-  max-width: 90%;
-  text-align: center;
-}
-
-.msg img {
-  max-width: 100%;
-  border-radius: 8px;
-  margin-top: 8px;
-  display: block;
-}
-
-/* THINKING INDICATOR */
-.thinking {
-  display: flex;
-  gap: 5px;
-  padding: 14px 16px;
-  background: var(--green-dim);
-  border: 1px solid rgba(0,229,92,0.2);
-  border-radius: 14px 14px 14px 2px;
-  align-self: flex-start;
-}
-
-.thinking span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: bounce 1.2s ease-in-out infinite;
-}
-
-.thinking span:nth-child(2) { animation-delay: 0.2s; }
-.thinking span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-5px); opacity: 1; }
-}
+#chat { flex:1; overflow-y:auto; padding:18px 20px; display:flex; flex-direction:column; gap:14px; scrollbar-width:thin; scrollbar-color:rgba(0,255,102,0.2) transparent; }
+#chat::-webkit-scrollbar { width:3px; }
+#chat::-webkit-scrollbar-thumb { background:rgba(0,255,102,0.2); border-radius:2px; }
+.msg-row { display:flex; flex-direction:column; gap:3px; }
+.msg-row.user { align-items:flex-end; }
+.msg-row.ai { align-items:flex-start; }
+.msg-label { font-family:'Space Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--muted); padding:0 4px; }
+.msg { max-width:78%; padding:11px 15px; line-height:1.65; white-space:pre-wrap; word-wrap:break-word; font-size:13px; }
+.msg.user { background:var(--red-dim); border:1px solid rgba(255,42,42,0.2); border-radius:12px 12px 2px 12px; color:var(--text); }
+.msg.ai { background:var(--green-dim); border:1px solid rgba(0,255,102,0.12); border-radius:12px 12px 12px 2px; color:var(--text); }
+.msg.system { background:rgba(51,136,255,0.05); border:1px solid rgba(51,136,255,0.12); border-radius:8px; font-family:'Space Mono',monospace; font-size:10px; color:var(--muted2); align-self:center; max-width:92%; text-align:center; letter-spacing:1px; }
+.msg img { max-width:100%; border-radius:6px; margin-top:8px; display:block; }
+.thinking { display:flex; gap:5px; padding:12px 15px; background:var(--green-dim); border:1px solid rgba(0,255,102,0.12); border-radius:12px 12px 12px 2px; align-self:flex-start; }
+.thinking span { width:5px; height:5px; border-radius:50%; background:var(--green); animation:bounce 1.2s ease-in-out infinite; }
+.thinking span:nth-child(2){animation-delay:0.2s}.thinking span:nth-child(3){animation-delay:0.4s}
 
 /* BOTTOM */
-#bottom {
-  padding: 14px 16px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.input-wrap {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  padding: 10px 12px;
-  transition: border-color 0.2s;
-}
-
-.input-wrap:focus-within {
-  border-color: rgba(255,59,59,0.4);
-}
-
-textarea {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  resize: none;
-  line-height: 1.5;
-  max-height: 120px;
-}
-
-textarea::placeholder { color: var(--muted); }
-
-#send-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: none;
-  background: var(--red);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: opacity 0.15s, transform 0.1s;
-}
-
-#send-btn:hover { opacity: 0.85; }
-#send-btn:active { transform: scale(0.94); }
-
-#send-btn svg { width: 16px; height: 16px; fill: white; }
+#bottom { padding:12px 16px; background:var(--surface); border-top:1px solid var(--border); display:flex; flex-direction:column; gap:9px; flex-shrink:0; position:relative; }
+#bottom::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(0,255,102,0.25),transparent); }
+.input-wrap { display:flex; align-items:flex-end; gap:9px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; padding:9px 12px; transition:border-color 0.2s,box-shadow 0.2s; }
+.input-wrap:focus-within { border-color:rgba(255,42,42,0.4); box-shadow:0 0 12px rgba(255,42,42,0.07); }
+textarea { flex:1; background:none; border:none; outline:none; color:var(--text); font-family:'Space Mono',monospace; font-size:12px; resize:none; line-height:1.5; max-height:120px; caret-color:var(--green); }
+textarea::placeholder { color:var(--muted); }
+#send-btn { width:34px; height:34px; border-radius:6px; border:none; background:var(--red); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:opacity 0.15s,transform 0.1s,box-shadow 0.15s; box-shadow:0 0 10px rgba(255,42,42,0.28); }
+#send-btn:hover { opacity:0.85; box-shadow:0 0 16px rgba(255,42,42,0.45); }
+#send-btn:active { transform:scale(0.93); }
+#send-btn svg { width:14px; height:14px; fill:white; }
 
 /* ACTION BUTTONS */
-.action-btns {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.action-btns::-webkit-scrollbar { display: none; }
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border2);
-  background: var(--surface2);
-  color: var(--muted2);
-  font-family: 'Space Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s;
-  flex-shrink: 0;
-}
-
-.action-btn .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.action-btn:hover {
-  border-color: var(--border2);
-  background: rgba(255,255,255,0.04);
-  color: var(--text);
-}
-
-.btn-groq .dot { background: var(--red); }
-.btn-groq:hover { border-color: rgba(255,59,59,0.4); color: var(--red); }
-.btn-groq.active { border-color: rgba(255,59,59,0.5); color: var(--red); background: var(--red-dim); }
-
-.btn-forge .dot { background: var(--green); }
-.btn-forge:hover { border-color: rgba(0,229,92,0.4); color: var(--green); }
-
-.btn-weather .dot { background: var(--amber); }
-.btn-weather:hover { border-color: rgba(255,170,0,0.4); color: var(--amber); }
-.btn-weather.active { border-color: rgba(255,170,0,0.5); color: var(--amber); background: rgba(255,170,0,0.08); }
-
-.btn-news .dot { background: var(--blue); }
-.btn-news:hover { border-color: rgba(68,153,255,0.4); color: var(--blue); }
-.btn-news.active { border-color: rgba(68,153,255,0.5); color: var(--blue); background: rgba(68,153,255,0.08); }
-
-/* MODE BADGE */
-.mode-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: 'Space Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: var(--red-dim);
-  border: 1px solid rgba(255,59,59,0.3);
-  color: var(--red);
-  align-self: flex-start;
-  margin-left: 4px;
-}
+.action-btns { display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px; user-select:none; }
+.action-btns::-webkit-scrollbar { display:none; }
+.action-btn { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:6px; border:1px solid var(--border2); background:var(--surface2); color:var(--muted2); font-family:'Space Mono',monospace; font-size:9px; letter-spacing:1.5px; cursor:grab; white-space:nowrap; transition:all 0.15s; flex-shrink:0; }
+.action-btn:active { cursor:grabbing; }
+.action-btn .dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.action-btn:hover { background:rgba(255,255,255,0.03); color:var(--text); }
+.action-btn.dragging { opacity:0.4; transform:scale(0.95); }
+.action-btn.drag-over { border-color:var(--green) !important; box-shadow:0 0 8px rgba(0,255,102,0.25); }
+.btn-groq .dot{background:var(--red);box-shadow:0 0 4px var(--red)}
+.btn-groq.active,.btn-groq:hover{border-color:rgba(255,42,42,0.5);color:var(--red);background:var(--red-dim)}
+.btn-forge .dot{background:var(--green);box-shadow:0 0 4px var(--green)}
+.btn-forge.active,.btn-forge:hover{border-color:rgba(0,255,102,0.5);color:var(--green);background:var(--green-dim)}
+.btn-weather .dot{background:var(--amber)}
+.btn-weather.active,.btn-weather:hover{border-color:rgba(255,170,0,0.5);color:var(--amber);background:var(--amber-dim)}
+.btn-news .dot{background:var(--blue)}
+.btn-news.active,.btn-news:hover{border-color:rgba(51,136,255,0.5);color:var(--blue);background:var(--blue-dim)}
+.btn-quake .dot{background:var(--red);box-shadow:0 0 4px var(--red);animation:pulse 1.5s infinite}
+.btn-quake.active,.btn-quake:hover{border-color:rgba(255,42,42,0.5);color:var(--red);background:var(--red-dim)}
+.btn-dict .dot{background:var(--teal)}
+.btn-dict.active,.btn-dict:hover{border-color:rgba(0,255,204,0.5);color:var(--teal);background:var(--teal-dim)}
+.btn-quote .dot{background:var(--purple)}
+.btn-quote.active,.btn-quote:hover{border-color:rgba(187,68,255,0.5);color:var(--purple);background:var(--purple-dim)}
+.btn-trivia .dot{background:var(--pink)}
+.btn-trivia.active,.btn-trivia:hover{border-color:rgba(255,68,170,0.5);color:var(--pink);background:var(--pink-dim)}
+.btn-bored .dot{background:var(--amber)}
+.btn-bored.active,.btn-bored:hover{border-color:rgba(255,170,0,0.5);color:var(--amber);background:var(--amber-dim)}
+.btn-clock .dot{background:var(--green)}
+.btn-clock.active,.btn-clock:hover{border-color:rgba(0,255,102,0.5);color:var(--green);background:var(--green-dim)}
+.btn-countdown .dot{background:var(--orange)}
+.btn-countdown.active,.btn-countdown:hover{border-color:rgba(255,102,0,0.5);color:var(--orange);background:rgba(255,102,0,0.08)}
+.btn-search .dot{background:var(--blue)}
+.btn-search.active,.btn-search:hover{border-color:rgba(51,136,255,0.5);color:var(--blue);background:var(--blue-dim)}
 </style>
 </head>
 <body>
@@ -473,19 +298,22 @@ textarea::placeholder { color: var(--muted); }
 <header>
   <div class="header-left">
     <div class="logo-mark"></div>
-    <span class="logo-text">UMN <span>CORE</span></span>
+    <div class="logo-wrap" style="position:relative;">
+      <span class="logo-text">UMN <span>CORE</span></span>
+      <span class="logo-ghost r" aria-hidden="true">UMN CORE</span>
+      <span class="logo-ghost t" aria-hidden="true">UMN CORE</span>
+    </div>
   </div>
+  <div class="header-center" id="header-clock">--:--:--</div>
   <div class="header-right">
     <div class="status-dot"></div>
     <span class="status-label">ONLINE</span>
   </div>
 </header>
 
-<!-- WEATHER PANEL -->
-<div id="weather-bar">
-  <div class="weather-item">
-    <span class="weather-temp" id="w-temp">—°</span>
-  </div>
+<!-- WEATHER -->
+<div id="weather-bar" class="panel">
+  <div class="weather-item"><span class="weather-temp" id="w-temp">—°</span></div>
   <span class="weather-sep">|</span>
   <div class="weather-item" id="w-desc">Loading...</div>
   <span class="weather-sep">|</span>
@@ -494,282 +322,456 @@ textarea::placeholder { color: var(--muted); }
   <div class="weather-item">💨 <span id="w-wind">—</span> km/h</div>
   <span class="weather-sep">|</span>
   <div class="weather-item" id="w-location" style="color:var(--muted)">—</div>
-  <button class="weather-close" onclick="closeWeather()">×</button>
+  <button class="panel-close" style="margin-left:auto" onclick="closePanel('weather')">×</button>
 </div>
 
-<!-- NEWS PANEL -->
-<div id="news-bar">
-  <div class="news-header-bar">
-    <span>// LIVE FEED</span>
-    <button class="weather-close" onclick="closeNews()">×</button>
-  </div>
+<!-- NEWS -->
+<div id="news-bar" class="panel panel-col">
+  <div class="panel-header"><span>// LIVE NEWS FEED</span><button class="panel-close" onclick="closePanel('news')">×</button></div>
   <div id="news-list"></div>
 </div>
 
+<!-- EARTHQUAKES -->
+<div id="quake-bar" class="panel panel-col">
+  <div class="panel-header"><span>// EARTHQUAKES — USGS LIVE M2.5+</span><button class="panel-close" onclick="closePanel('quake')">×</button></div>
+  <div id="quake-list"></div>
+</div>
+
+<!-- DICTIONARY -->
+<div id="dict-bar" class="panel panel-col">
+  <div class="panel-header"><span>// DICTIONARY</span><button class="panel-close" onclick="closePanel('dict')">×</button></div>
+  <div class="dict-search">
+    <input class="dict-input" id="dict-input" type="text" placeholder="Enter a word...">
+    <button class="dict-go" onclick="fetchDict()">LOOKUP</button>
+  </div>
+  <div id="dict-result" style="padding:10px 18px;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;">Type a word above and press LOOKUP or Enter.</div>
+</div>
+
+<!-- QUOTE -->
+<div id="quote-bar" class="panel panel-col" style="padding:12px 18px;gap:6px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--purple);">// QUOTE OF THE DAY</span>
+    <button class="panel-close" onclick="closePanel('quote')">×</button>
+  </div>
+  <div id="quote-text" style="font-size:13px;line-height:1.7;color:var(--text);font-style:italic;">Loading...</div>
+  <div id="quote-author" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--purple);margin-top:4px;"></div>
+  <div id="quote-tags" style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);"></div>
+  <button onclick="fetchQuote()" style="margin-top:6px;background:none;border:1px solid rgba(187,68,255,0.3);border-radius:4px;color:var(--purple);font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;letter-spacing:1px;width:fit-content;">↻ NEW QUOTE</button>
+</div>
+
+<!-- QUIZ -->
+<div id="trivia-bar" class="panel panel-col">
+  <div class="panel-header"><span>// QUIZ</span><button class="panel-close" onclick="closePanel('trivia')">×</button></div>
+  <div id="trivia-content" style="padding:10px 18px 12px;">
+    <div id="trivia-q" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;margin-bottom:10px;">Loading...</div>
+    <div id="trivia-opts"></div>
+    <button class="trivia-next" id="trivia-next" onclick="fetchTrivia()">→ NEXT QUESTION</button>
+  </div>
+</div>
+
+<!-- BORED -->
+<div id="bored-bar" class="panel" style="flex-wrap:wrap;align-items:center;gap:12px;padding:10px 18px;">
+  <span style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--amber);">// BORED?</span>
+  <span id="bored-text" style="flex:1;font-size:13px;color:var(--text);min-width:180px;">Loading...</span>
+  <span id="bored-meta" style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);"></span>
+  <button onclick="fetchBored()" style="background:none;border:1px solid rgba(255,170,0,0.3);border-radius:4px;color:var(--amber);font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;cursor:pointer;">↻ NEW</button>
+  <button class="panel-close" onclick="closePanel('bored')">×</button>
+</div>
+
+<!-- WORLD CLOCK -->
+<div id="clock-bar" class="panel panel-col">
+  <div class="panel-header"><span>// WORLD CLOCK</span><button class="panel-close" onclick="closePanel('clock')">×</button></div>
+  <div class="clock-grid" id="clock-grid"></div>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="countdown-bar" class="panel panel-col">
+  <div class="panel-header"><span>// COUNTDOWN TIMER</span><button class="panel-close" onclick="closePanel('countdown')">×</button></div>
+  <div class="countdown-setup">
+    <input class="cd-input" id="cd-h" type="number" min="0" max="99" value="0">
+    <span class="cd-label">HRS</span>
+    <input class="cd-input" id="cd-m" type="number" min="0" max="59" value="5">
+    <span class="cd-label">MIN</span>
+    <input class="cd-input" id="cd-s" type="number" min="0" max="59" value="0">
+    <span class="cd-label">SEC</span>
+    <button class="cd-btn cd-start" id="cd-toggle" onclick="toggleCountdown()">▶ START</button>
+    <button class="cd-btn cd-reset" onclick="resetCountdown()">↺ RESET</button>
+  </div>
+  <div class="countdown-display">
+    <div class="cd-seg"><div class="cd-num" id="cd-display-h">00</div><div class="cd-unit">HRS</div></div>
+    <div class="cd-colon">:</div>
+    <div class="cd-seg"><div class="cd-num" id="cd-display-m">05</div><div class="cd-unit">MIN</div></div>
+    <div class="cd-colon">:</div>
+    <div class="cd-seg"><div class="cd-num" id="cd-display-s">00</div><div class="cd-unit">SEC</div></div>
+  </div>
+</div>
+
+<!-- WEB SEARCH -->
+<div id="search-bar" class="panel panel-col">
+  <div class="panel-header"><span>// WEB SEARCH — DUCKDUCKGO</span><button class="panel-close" onclick="closePanel('search')">×</button></div>
+  <div class="search-row">
+    <input class="search-input" id="search-input" type="text" placeholder="Search the web...">
+    <button class="search-go" onclick="doSearch()">SEARCH</button>
+  </div>
+  <div id="search-results" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);padding:10px 18px;">Enter a query above.</div>
+</div>
+
+<!-- CHAT -->
 <div id="chat">
   <div class="msg system">// UMN CORE INITIALISED — SELECT MODE BELOW</div>
 </div>
 
+<!-- BOTTOM -->
 <div id="bottom">
   <div class="input-wrap">
     <textarea id="input" rows="1" placeholder="Transmit to UMN Core..."></textarea>
     <button id="send-btn" title="Send">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
   </div>
-
-  <div class="action-btns">
-    <button class="action-btn btn-groq active" id="btn-groq" onclick="setMode('groq')">
-      <span class="dot"></span>GROQ CORE
-    </button>
-    <button class="action-btn btn-forge" id="btn-forge" onclick="setMode('forge')">
-      <span class="dot"></span>MELON FORGE
-    </button>
-    <button class="action-btn btn-weather" id="btn-weather" onclick="toggleWeather()">
-      <span class="dot"></span>WEATHER
-    </button>
-    <button class="action-btn btn-news" id="btn-news" onclick="toggleNews()">
-      <span class="dot"></span>NEWS FEED
-    </button>
+  <div class="action-btns" id="action-btns">
+    <button class="action-btn btn-groq active" id="btn-groq" data-panel="groq"><span class="dot"></span>GROQ CORE</button>
+    <button class="action-btn btn-forge" id="btn-forge" data-panel="forge"><span class="dot"></span>MELON FORGE</button>
+    <button class="action-btn btn-weather" id="btn-weather" data-panel="weather"><span class="dot"></span>WEATHER</button>
+    <button class="action-btn btn-news" id="btn-news" data-panel="news"><span class="dot"></span>NEWS FEED</button>
+    <button class="action-btn btn-quake" id="btn-quake" data-panel="quake"><span class="dot"></span>EARTHQUAKES</button>
+    <button class="action-btn btn-dict" id="btn-dict" data-panel="dict"><span class="dot"></span>DICTIONARY</button>
+    <button class="action-btn btn-quote" id="btn-quote" data-panel="quote"><span class="dot"></span>QUOTE OF DAY</button>
+    <button class="action-btn btn-trivia" id="btn-trivia" data-panel="trivia"><span class="dot"></span>QUIZ</button>
+    <button class="action-btn btn-bored" id="btn-bored" data-panel="bored"><span class="dot"></span>BORED?</button>
+    <button class="action-btn btn-clock" id="btn-clock" data-panel="clock"><span class="dot"></span>WORLD CLOCK</button>
+    <button class="action-btn btn-countdown" id="btn-countdown" data-panel="countdown"><span class="dot"></span>COUNTDOWN</button>
+    <button class="action-btn btn-search" id="btn-search" data-panel="search"><span class="dot"></span>WEB SEARCH</button>
   </div>
 </div>
 
 <script>
 const chatEl = document.getElementById('chat');
 const inputEl = document.getElementById('input');
+let messages = [], currentMode = 'groq';
 
-let messages = [];
-let currentMode = 'groq';
+const panelState = {};
+['weather','news','quake','dict','quote','trivia','bored','clock','countdown','search'].forEach(p => { panelState[p]={visible:false,loaded:false}; });
+const panelLoaders = { weather:fetchWeather, news:fetchNews, quake:fetchQuake, quote:fetchQuote, trivia:fetchTrivia, bored:fetchBored, clock:initClock };
 
-// Auto-resize textarea
-inputEl.addEventListener('input', () => {
-  inputEl.style.height = 'auto';
-  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
-});
+/* PANELS */
+function togglePanel(name) {
+  const s = panelState[name];
+  s.visible = !s.visible;
+  document.getElementById(name+'-bar').classList.toggle('visible', s.visible);
+  document.getElementById('btn-'+name)?.classList.toggle('active', s.visible);
+  if (s.visible && !s.loaded && panelLoaders[name]) panelLoaders[name]();
+}
+function closePanel(name) {
+  panelState[name].visible = false;
+  document.getElementById(name+'-bar').classList.remove('visible');
+  document.getElementById('btn-'+name)?.classList.remove('active');
+}
 
-inputEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) {
+/* BUTTON CLICKS + DRAG TO REORDER */
+const bar = document.getElementById('action-btns');
+bar.querySelectorAll('.action-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const p = btn.dataset.panel;
+    if (p==='groq') setMode('groq');
+    else if (p==='forge') setMode('forge');
+    else togglePanel(p);
+  });
+  btn.setAttribute('draggable','true');
+  let dragSrc = null;
+  btn.addEventListener('dragstart', e => { dragSrc=btn; btn.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+  btn.addEventListener('dragend', () => { btn.classList.remove('dragging'); bar.querySelectorAll('.action-btn').forEach(b=>b.classList.remove('drag-over')); });
+  btn.addEventListener('dragover', e => { e.preventDefault(); if (btn!==dragSrc) btn.classList.add('drag-over'); });
+  btn.addEventListener('dragleave', () => btn.classList.remove('drag-over'));
+  btn.addEventListener('drop', e => {
     e.preventDefault();
-    handleSend();
-  }
+    const src = bar.querySelector('.dragging');
+    if (src && src!==btn) {
+      const btns=[...bar.querySelectorAll('.action-btn')];
+      if (btns.indexOf(src)<btns.indexOf(btn)) btn.after(src); else btn.before(src);
+    }
+    btn.classList.remove('drag-over');
+  });
 });
 
+/* INPUT */
+inputEl.addEventListener('input', () => { inputEl.style.height='auto'; inputEl.style.height=Math.min(inputEl.scrollHeight,120)+'px'; });
+inputEl.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();} });
 document.getElementById('send-btn').onclick = handleSend;
 
 function setMode(mode) {
   currentMode = mode;
-  document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
-  if (mode === 'groq') document.getElementById('btn-groq').classList.add('active');
-  if (mode === 'forge') document.getElementById('btn-forge').classList.add('active');
+  document.querySelectorAll('.action-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+mode).classList.add('active');
 }
+function handleSend() { currentMode==='groq'?sendGroq():sendForge(); }
 
-function handleSend() {
-  if (currentMode === 'groq') sendGroq();
-  else if (currentMode === 'forge') sendForge();
-}
-
-/* ---- ADD MESSAGE ---- */
+/* MESSAGES */
 function addMsg(content, type) {
-  const row = document.createElement('div');
-  row.className = 'msg-row ' + (type === 'user' ? 'user' : type === 'ai' ? 'ai' : '');
-
-  if (type === 'system') {
-    const m = document.createElement('div');
-    m.className = 'msg system';
-    m.textContent = content;
-    chatEl.appendChild(m);
-    chatEl.scrollTop = chatEl.scrollHeight;
-    return;
-  }
-
-  const label = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = type === 'user' ? 'YOU' : 'CORE';
-
-  const m = document.createElement('div');
-  m.className = 'msg ' + type;
-  m.innerHTML = content;
-
-  row.appendChild(label);
-  row.appendChild(m);
-  chatEl.appendChild(row);
-  chatEl.scrollTop = chatEl.scrollHeight;
-  return m;
+  if (type==='system') { const m=document.createElement('div'); m.className='msg system'; m.textContent=content; chatEl.appendChild(m); chatEl.scrollTop=chatEl.scrollHeight; return; }
+  const row=document.createElement('div'); row.className='msg-row '+(type==='user'?'user':'ai');
+  const label=document.createElement('div'); label.className='msg-label'; label.textContent=type==='user'?'YOU':'CORE';
+  const m=document.createElement('div'); m.className='msg '+type; m.innerHTML=content;
+  row.appendChild(label); row.appendChild(m); chatEl.appendChild(row); chatEl.scrollTop=chatEl.scrollHeight; return m;
 }
+function addThinking() { const t=document.createElement('div'); t.className='thinking'; t.id='thinking'; t.innerHTML='<span></span><span></span><span></span>'; chatEl.appendChild(t); chatEl.scrollTop=chatEl.scrollHeight; }
+function removeThinking() { document.getElementById('thinking')?.remove(); }
 
-function addThinking() {
-  const t = document.createElement('div');
-  t.className = 'thinking';
-  t.id = 'thinking';
-  t.innerHTML = '<span></span><span></span><span></span>';
-  chatEl.appendChild(t);
-  chatEl.scrollTop = chatEl.scrollHeight;
-}
-
-function removeThinking() {
-  const t = document.getElementById('thinking');
-  if (t) t.remove();
-}
-
-/* ---- GROQ CHAT ---- */
+/* GROQ */
 async function sendGroq() {
-  const text = inputEl.value.trim();
-  if (!text) return;
-  addMsg(text, 'user');
-  inputEl.value = '';
-  inputEl.style.height = 'auto';
-  messages.push({ role: 'user', content: text });
-  addThinking();
-
+  const text=inputEl.value.trim(); if(!text)return;
+  addMsg(text,'user'); inputEl.value=''; inputEl.style.height='auto';
+  messages.push({role:'user',content:text}); addThinking();
   try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages })
-    });
-    const data = await res.json();
-    removeThinking();
-    const reply = data.reply || data.error || 'No response.';
-    addMsg(reply, 'ai');
-    messages.push({ role: 'assistant', content: reply });
-  } catch (err) {
-    removeThinking();
-    addMsg('// ERROR: ' + err.message, 'ai');
-  }
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
+    const data=await res.json(); removeThinking();
+    const reply=data.reply||data.error||'No response.';
+    addMsg(reply,'ai'); messages.push({role:'assistant',content:reply});
+  } catch(err) { removeThinking(); addMsg('// ERROR: '+err.message,'ai'); }
 }
 
-/* ---- IMAGE (MELON FORGE) ---- */
+/* FORGE */
 function sendForge() {
-  const text = inputEl.value.trim();
-  if (!text) return;
-  addMsg(text, 'user');
-  inputEl.value = '';
-  inputEl.style.height = 'auto';
-  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent('red green neon cyberpunk UMN style ' + text);
-  addMsg(`<img src="${url}" alt="${text}">`, 'ai');
+  const text=inputEl.value.trim(); if(!text)return;
+  addMsg(text,'user'); inputEl.value=''; inputEl.style.height='auto';
+  addMsg(`<img src="https://image.pollinations.ai/prompt/${encodeURIComponent('red green neon cyberpunk UMN style '+text)}" alt="${text}">`, 'ai');
 }
 
-/* ---- WEATHER ---- */
-let weatherLoaded = false;
-let weatherVisible = false;
-
-function toggleWeather() {
-  const bar = document.getElementById('weather-bar');
-  weatherVisible = !weatherVisible;
-  bar.classList.toggle('visible', weatherVisible);
-  document.getElementById('btn-weather').classList.toggle('active', weatherVisible);
-  if (weatherVisible && !weatherLoaded) fetchWeather();
-}
-
-function closeWeather() {
-  weatherVisible = false;
-  document.getElementById('weather-bar').classList.remove('visible');
-  document.getElementById('btn-weather').classList.remove('active');
-}
-
+/* WEATHER */
 async function fetchWeather() {
   try {
-    // Get user's coords
     navigator.geolocation.getCurrentPosition(async pos => {
-      const { latitude: lat, longitude: lon } = pos.coords;
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh`;
-      const res = await fetch(url);
-      const data = await res.json();
-      const c = data.current;
-      document.getElementById('w-temp').textContent = Math.round(c.temperature_2m) + '°C';
-      document.getElementById('w-desc').textContent = weatherDesc(c.weather_code);
-      document.getElementById('w-humidity').textContent = c.relative_humidity_2m;
-      document.getElementById('w-wind').textContent = Math.round(c.wind_speed_10m);
-
-      // Reverse geocode for city
-      const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
-      const geoData = await geo.json();
-      const city = geoData.address?.city || geoData.address?.town || geoData.address?.village || '';
-      document.getElementById('w-location').textContent = city;
-      weatherLoaded = true;
-    }, () => {
-      document.getElementById('w-desc').textContent = 'Location access denied';
-    });
-  } catch (e) {
-    document.getElementById('w-desc').textContent = 'Weather unavailable';
-  }
+      const {latitude:lat,longitude:lon}=pos.coords;
+      const res=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh`);
+      const data=await res.json(); const c=data.current;
+      document.getElementById('w-temp').textContent=Math.round(c.temperature_2m)+'°C';
+      document.getElementById('w-desc').textContent=weatherDesc(c.weather_code);
+      document.getElementById('w-humidity').textContent=c.relative_humidity_2m;
+      document.getElementById('w-wind').textContent=Math.round(c.wind_speed_10m);
+      const geo=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const gd=await geo.json();
+      document.getElementById('w-location').textContent=gd.address?.city||gd.address?.town||gd.address?.village||'';
+      panelState.weather.loaded=true;
+    },()=>{ document.getElementById('w-desc').textContent='Location denied'; });
+  } catch { document.getElementById('w-desc').textContent='Unavailable'; }
+}
+function weatherDesc(c) {
+  if(c===0)return'☀️ Clear'; if(c<=2)return'⛅ Partly cloudy'; if(c===3)return'☁️ Overcast';
+  if(c<=49)return'🌫️ Fog'; if(c<=59)return'🌦️ Drizzle'; if(c<=69)return'🌧️ Rain';
+  if(c<=79)return'❄️ Snow'; if(c<=82)return'🌧️ Showers'; if(c<=86)return'🌨️ Snow showers';
+  if(c<=99)return'⛈️ Storm'; return'🌡️';
 }
 
-function weatherDesc(code) {
-  if (code === 0) return '☀️ Clear sky';
-  if (code <= 2) return '⛅ Partly cloudy';
-  if (code === 3) return '☁️ Overcast';
-  if (code <= 49) return '🌫️ Foggy';
-  if (code <= 59) return '🌦️ Drizzle';
-  if (code <= 69) return '🌧️ Rain';
-  if (code <= 79) return '❄️ Snow';
-  if (code <= 82) return '🌧️ Rain showers';
-  if (code <= 86) return '🌨️ Snow showers';
-  if (code <= 99) return '⛈️ Thunderstorm';
-  return '🌡️ Unknown';
-}
-
-/* ---- NEWS ---- */
-let newsVisible = false;
-let newsLoaded = false;
-
-function toggleNews() {
-  const bar = document.getElementById('news-bar');
-  newsVisible = !newsVisible;
-  bar.classList.toggle('visible', newsVisible);
-  document.getElementById('btn-news').classList.toggle('active', newsVisible);
-  if (newsVisible && !newsLoaded) fetchNews();
-}
-
-function closeNews() {
-  newsVisible = false;
-  document.getElementById('news-bar').classList.remove('visible');
-  document.getElementById('btn-news').classList.remove('active');
-}
-
+/* NEWS */
 async function fetchNews() {
-  const list = document.getElementById('news-list');
-  list.innerHTML = '<div class="news-item"><div class="news-meta">Loading feed...</div></div>';
+  const list=document.getElementById('news-list');
+  list.innerHTML='<div class="news-item"><div class="news-meta">Loading feed...</div></div>';
   try {
-    // Calls your own backend /api/news which uses NEWS_API_KEY from env
-    const res = await fetch('/api/news');
-    const data = await res.json();
-    const articles = data.articles || [];
-    if (!articles.length) {
-      list.innerHTML = '<div class="news-item"><div class="news-meta">No articles found.</div></div>';
-      return;
+    const res=await fetch('/api/news'); const data=await res.json(); const articles=data.articles||[];
+    list.innerHTML='';
+    if(!articles.length){list.innerHTML='<div class="news-item"><div class="news-meta">No articles.</div></div>';return;}
+    articles.slice(0,8).forEach(a=>{
+      const item=document.createElement('div'); item.className='news-item';
+      item.innerHTML=`<div class="news-title">${escHtml(a.title)}</div><div class="news-meta">${escHtml(a.source?.name||'')} · ${timeAgo(a.publishedAt)}</div>`;
+      item.onclick=()=>{if(a.url)window.open(a.url,'_blank');}; list.appendChild(item);
+    }); panelState.news.loaded=true;
+  } catch(e){list.innerHTML=`<div class="news-item"><div class="news-meta">// ERROR: ${e.message}</div></div>`;}
+}
+
+/* EARTHQUAKES */
+async function fetchQuake() {
+  const list=document.getElementById('quake-list');
+  list.innerHTML='<div class="quake-item"><div class="quake-info"><div class="quake-place" style="font-family:Space Mono,monospace;font-size:10px;color:var(--muted)">Fetching seismic data...</div></div></div>';
+  try {
+    const res=await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson');
+    const data=await res.json(); list.innerHTML=''; const quakes=data.features.slice(0,10);
+    if(!quakes.length){list.innerHTML='<div class="quake-item"><div class="quake-info"><div class="quake-place">No significant quakes in past 24h</div></div></div>';return;}
+    quakes.forEach(q=>{
+      const p=q.properties; const mag=p.mag?.toFixed(1)?? '?';
+      const cls=p.mag>=6?'mag-high':p.mag>=4?'mag-mid':'mag-low';
+      const depth=q.geometry?.coordinates?.[2]?.toFixed(0)?? '?';
+      const item=document.createElement('div'); item.className='quake-item';
+      item.innerHTML=`<div class="quake-mag ${cls}">M${mag}</div><div class="quake-info"><div class="quake-place">${escHtml(p.place||'Unknown')}</div><div class="quake-meta">${timeAgo(p.time)}</div></div><div class="quake-depth">${depth}km deep</div>`;
+      item.onclick=()=>{if(p.url)window.open(p.url,'_blank');}; list.appendChild(item);
+    }); panelState.quake.loaded=true;
+  } catch(e){list.innerHTML=`<div class="quake-item"><div class="quake-info"><div class="quake-place">// ERROR: ${e.message}</div></div></div>`;}
+}
+
+/* DICTIONARY */
+document.getElementById('dict-input').addEventListener('keydown',e=>{if(e.key==='Enter')fetchDict();});
+async function fetchDict() {
+  const word=document.getElementById('dict-input').value.trim(); if(!word)return;
+  const result=document.getElementById('dict-result');
+  result.innerHTML='<span style="color:var(--muted);font-family:Space Mono,monospace;font-size:10px;">Looking up...</span>';
+  panelState.dict.loaded=true;
+  try {
+    const res=await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if(!res.ok){result.innerHTML='<span style="color:var(--red);font-family:Space Mono,monospace;font-size:10px;">// Word not found</span>';return;}
+    const data=await res.json(); const entry=data[0];
+    let html=`<div class="dict-word">${escHtml(entry.word)}</div>`;
+    if(entry.phonetic)html+=`<div class="dict-phonetic">${escHtml(entry.phonetic)}</div>`;
+    entry.meanings.slice(0,3).forEach(m=>{
+      html+=`<div class="dict-pos">${escHtml(m.partOfSpeech)}</div>`;
+      m.definitions.slice(0,2).forEach(d=>{
+        html+=`<div class="dict-def">• ${escHtml(d.definition)}</div>`;
+        if(d.example)html+=`<div class="dict-example">"${escHtml(d.example)}"</div>`;
+      });
+    }); result.innerHTML=html;
+  } catch(e){result.innerHTML=`<span style="color:var(--red);font-family:Space Mono,monospace;font-size:10px;">// ERROR: ${e.message}</span>`;}
+}
+
+/* QUOTE */
+async function fetchQuote() {
+  document.getElementById('quote-text').textContent='Loading...';
+  document.getElementById('quote-author').textContent='';
+  document.getElementById('quote-tags').textContent='';
+  try {
+    const res=await fetch('https://api.quotable.io/random'); const data=await res.json();
+    document.getElementById('quote-text').textContent='\u201c'+data.content+'\u201d';
+    document.getElementById('quote-author').textContent='\u2014 '+data.author;
+    if(data.tags?.length)document.getElementById('quote-tags').textContent=data.tags.join(' · ');
+    panelState.quote.loaded=true;
+  } catch{document.getElementById('quote-text').textContent='// Could not load quote';}
+}
+
+/* TRIVIA */
+async function fetchTrivia() {
+  const q=document.getElementById('trivia-q'); const opts=document.getElementById('trivia-opts'); const next=document.getElementById('trivia-next');
+  q.style.cssText='color:var(--muted);font-family:Space Mono,monospace;font-size:10px;margin-bottom:10px;'; q.textContent='Loading...'; opts.innerHTML=''; next.style.display='none';
+  try {
+    const res=await fetch('https://opentdb.com/api.php?amount=1&type=multiple'); const data=await res.json();
+    if(data.response_code!==0)throw new Error('Rate limited — try again in a moment');
+    const item=data.results[0]; const correct=decodeHtml(item.correct_answer);
+    const all=[...item.incorrect_answers.map(decodeHtml),correct].sort(()=>Math.random()-0.5);
+    q.style.cssText='font-size:12.5px;line-height:1.6;color:var(--text);margin-bottom:10px;';
+    q.innerHTML=`<span style="font-family:'Space Mono',monospace;font-size:9px;color:var(--pink);letter-spacing:2px;">${escHtml(item.category)} · ${item.difficulty.toUpperCase()}</span><br><br>${decodeHtml(item.question)}`;
+    let answered=false;
+    all.forEach(ans=>{
+      const btn=document.createElement('button'); btn.className='trivia-opt'; btn.textContent=ans;
+      btn.onclick=()=>{
+        if(answered)return; answered=true;
+        opts.querySelectorAll('.trivia-opt').forEach(b=>b.classList.add(b.textContent===correct?'correct':'wrong'));
+        next.style.display='block';
+      }; opts.appendChild(btn);
+    }); panelState.trivia.loaded=true;
+  } catch(e){q.style.cssText='';q.textContent='// '+e.message;}
+}
+function decodeHtml(html){const t=document.createElement('textarea');t.innerHTML=html;return t.value;}
+
+/* BORED */
+async function fetchBored() {
+  document.getElementById('bored-text').textContent='Loading...'; document.getElementById('bored-meta').textContent='';
+  try {
+    const res=await fetch('https://bored-api.appbrewery.com/random'); const data=await res.json();
+    document.getElementById('bored-text').textContent=data.activity||'—';
+    const type=data.type?data.type.charAt(0).toUpperCase()+data.type.slice(1):'';
+    const parts=[type,data.participants?data.participants+' person'+(data.participants>1?'s':''):''].filter(Boolean);
+    document.getElementById('bored-meta').textContent=parts.join(' · '); panelState.bored.loaded=true;
+  } catch{document.getElementById('bored-text').textContent='// Could not load';}
+}
+
+/* WORLD CLOCK */
+const ZONES=[
+  {city:'LOCAL',tz:null},{city:'NEW YORK',tz:'America/New_York'},{city:'LONDON',tz:'Europe/London'},
+  {city:'PARIS',tz:'Europe/Paris'},{city:'DUBAI',tz:'Asia/Dubai'},{city:'TOKYO',tz:'Asia/Tokyo'},
+  {city:'SYDNEY',tz:'Australia/Sydney'},{city:'LOS ANGELES',tz:'America/Los_Angeles'},
+];
+function initClock() {
+  const grid=document.getElementById('clock-grid'); grid.innerHTML='';
+  ZONES.forEach(z=>{
+    const el=document.createElement('div'); el.className='clock-zone';
+    const key=z.city.replace(/\s/g,'');
+    el.innerHTML=`<div class="clock-city">${z.city}</div><div class="clock-time" id="ct-${key}">--:--:--</div><div class="clock-date" id="cd-${key}">---</div>`;
+    grid.appendChild(el);
+  }); panelState.clock.loaded=true; updateClocks();
+}
+function updateClocks() {
+  const now=new Date();
+  const topts={hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false};
+  const dopts={weekday:'short',month:'short',day:'numeric'};
+  ZONES.forEach(z=>{
+    const key=z.city.replace(/\s/g,'');
+    try {
+      const t=z.tz?now.toLocaleTimeString('en-GB',{...topts,timeZone:z.tz}):now.toLocaleTimeString('en-GB',topts);
+      const d=z.tz?now.toLocaleDateString('en-GB',{...dopts,timeZone:z.tz}):now.toLocaleDateString('en-GB',dopts);
+      const te=document.getElementById('ct-'+key); const de=document.getElementById('cd-'+key);
+      if(te)te.textContent=t; if(de)de.textContent=d;
+    } catch{}
+  });
+  document.getElementById('header-clock').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+}
+setInterval(updateClocks, 1000); updateClocks();
+
+/* COUNTDOWN */
+let cdRemaining=0, cdRunning=false, cdInterval=null;
+function toggleCountdown() {
+  if(!cdRunning) {
+    if(cdRemaining<=0){
+      const h=parseInt(document.getElementById('cd-h').value)||0;
+      const m=parseInt(document.getElementById('cd-m').value)||0;
+      const s=parseInt(document.getElementById('cd-s').value)||0;
+      cdRemaining=h*3600+m*60+s; if(cdRemaining<=0)return;
     }
-    list.innerHTML = '';
-    articles.slice(0, 8).forEach(a => {
-      const item = document.createElement('div');
-      item.className = 'news-item';
-      item.innerHTML = `
-        <div class="news-title">${escHtml(a.title)}</div>
-        <div class="news-meta">${escHtml(a.source?.name || '')} · ${timeAgo(a.publishedAt)}</div>
-      `;
-      item.onclick = () => {
-        if (a.url) window.open(a.url, '_blank');
-      };
-      list.appendChild(item);
-    });
-    newsLoaded = true;
-  } catch (e) {
-    list.innerHTML = `<div class="news-item"><div class="news-meta">// ERROR: ${e.message}</div></div>`;
+    cdRunning=true; document.getElementById('cd-toggle').textContent='⏸ PAUSE';
+    cdInterval=setInterval(tickCountdown,1000);
+  } else {
+    cdRunning=false; document.getElementById('cd-toggle').textContent='▶ RESUME'; clearInterval(cdInterval);
+  }
+  panelState.countdown.loaded=true;
+}
+function tickCountdown() {
+  cdRemaining--; renderCountdown();
+  if(cdRemaining<=0){
+    clearInterval(cdInterval); cdRunning=false; document.getElementById('cd-toggle').textContent='▶ START';
+    ['cd-display-h','cd-display-m','cd-display-s'].forEach(id=>document.getElementById(id).classList.add('done'));
   }
 }
+function resetCountdown() {
+  clearInterval(cdInterval); cdRunning=false; cdRemaining=0;
+  document.getElementById('cd-toggle').textContent='▶ START';
+  ['cd-display-h','cd-display-m','cd-display-s'].forEach(id=>document.getElementById(id).classList.remove('done'));
+  const h=parseInt(document.getElementById('cd-h').value)||0;
+  const m=parseInt(document.getElementById('cd-m').value)||0;
+  const s=parseInt(document.getElementById('cd-s').value)||0;
+  cdRemaining=h*3600+m*60+s; renderCountdown();
+}
+function renderCountdown() {
+  const h=Math.floor(cdRemaining/3600), m=Math.floor((cdRemaining%3600)/60), s=cdRemaining%60;
+  document.getElementById('cd-display-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-display-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-display-s').textContent=String(s).padStart(2,'0');
+}
+resetCountdown();
 
-function escHtml(s) {
-  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+/* WEB SEARCH */
+document.getElementById('search-input').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+async function doSearch() {
+  const query=document.getElementById('search-input').value.trim(); if(!query)return;
+  const results=document.getElementById('search-results');
+  results.innerHTML='<div style="padding:10px 0;color:var(--muted);font-size:10px;font-family:Space Mono,monospace;">Searching...</div>';
+  panelState.search.loaded=true;
+  try {
+    const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const res=await fetch(url); const data=await res.json();
+    let html='';
+    if(data.AbstractText) {
+      html+=`<div class="sr-item"><div class="sr-title" style="color:var(--teal);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;margin-bottom:4px;">INSTANT ANSWER</div><div class="sr-snippet">${escHtml(data.AbstractText)}</div>${data.AbstractURL?`<div class="sr-url">${escHtml(data.AbstractURL)}</div>`:''}</div>`;
+    }
+    const topics=(data.RelatedTopics||[]).filter(t=>t.Text&&t.FirstURL).slice(0,8);
+    topics.forEach(t=>{
+      html+=`<div class="sr-item" onclick="window.open('${escHtml(t.FirstURL)}','_blank')"><div class="sr-title">${escHtml((t.Text||'').split(' - ')[0])}</div><div class="sr-url">${escHtml(t.FirstURL)}</div>${t.Text?.includes(' - ')?`<div class="sr-snippet">${escHtml(t.Text.split(' - ').slice(1).join(' - '))}</div>`:''}</div>`;
+    });
+    if(!html) html=`<div style="padding:12px 0;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;">No instant results — <span style="color:var(--blue);cursor:pointer;" onclick="window.open('https://duckduckgo.com/?q=${encodeURIComponent(query)}','_blank')">open in DuckDuckGo ↗</span></div>`;
+    else html+=`<div class="sr-item" style="text-align:center;" onclick="window.open('https://duckduckgo.com/?q=${encodeURIComponent(query)}','_blank')"><div style="color:var(--blue);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;">VIEW ALL ON DUCKDUCKGO ↗</div></div>`;
+    results.innerHTML=html;
+  } catch(e){results.innerHTML=`<div style="padding:10px 0;color:var(--red);font-family:'Space Mono',monospace;font-size:10px;">// ERROR: ${e.message}</div>`;}
 }
 
-function timeAgo(iso) {
-  if (!iso) return '';
-  const diff = (Date.now() - new Date(iso)) / 1000 / 60;
-  if (diff < 60) return Math.round(diff) + 'm ago';
-  if (diff < 1440) return Math.round(diff / 60) + 'h ago';
-  return Math.round(diff / 1440) + 'd ago';
+/* HELPERS */
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function timeAgo(ts){
+  if(!ts)return''; const diff=(Date.now()-new Date(ts))/1000/60;
+  if(diff<60)return Math.round(diff)+'m ago'; if(diff<1440)return Math.round(diff/60)+'h ago'; return Math.round(diff/1440)+'d ago';
 }
 </script>
 </body>
