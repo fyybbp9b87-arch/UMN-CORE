@@ -64,6 +64,231 @@ body::after {
   60%{clip-path:inset(85% 0 2% 0)}70%{clip-path:inset(40% 0 40% 0)}80%{clip-path:inset(60% 0 20% 0)}
   90%{clip-path:inset(10% 0 75% 0)}100%{clip-path:inset(0 0 100% 0)}
 }
+@keyframes captchaIn {
+  from{opacity:0;transform:scale(0.96) translateY(6px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@keyframes captchaOut {
+  from{opacity:1;transform:scale(1)}
+  to{opacity:0;transform:scale(1.04)}
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+@keyframes scanline {
+  0%{transform:translateY(-100%)}
+  100%{transform:translateY(100vh)}
+}
+
+/* CAPTCHA OVERLAY */
+#captcha-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(2,2,3,0.92);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+#captcha-overlay::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  animation: scanline 3s linear infinite;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.captcha-box {
+  background: var(--surface);
+  border: 1px solid rgba(0,255,102,0.2);
+  border-radius: 12px;
+  padding: 36px 40px 30px;
+  width: 340px;
+  max-width: calc(100vw - 40px);
+  box-shadow: 0 0 60px rgba(0,255,102,0.07), 0 0 120px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.04);
+  animation: captchaIn 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+  position: relative;
+}
+.captcha-box::before {
+  content: '';
+  position: absolute; top: -1px; left: 20%; right: 20%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+.captcha-corner {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-color: var(--green);
+  border-style: solid;
+  opacity: 0.6;
+}
+.captcha-corner.tl { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+.captcha-corner.tr { top: 6px; right: 6px; border-width: 1px 1px 0 0; }
+.captcha-corner.bl { bottom: 6px; left: 6px; border-width: 0 0 1px 1px; }
+.captcha-corner.br { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+.captcha-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 4px;
+  color: var(--green);
+  text-shadow: 0 0 8px rgba(0,255,102,0.45);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.captcha-tag::before {
+  content: '';
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 1.5s infinite;
+  flex-shrink: 0;
+}
+.captcha-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+.captcha-sub {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--muted2);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* Math equation display */
+.captcha-equation-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.captcha-equation-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(0,255,102,0.012) 3px, rgba(0,255,102,0.012) 4px);
+  pointer-events: none;
+}
+.captcha-equation {
+  font-family: 'Space Mono', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(0,255,102,0.4), 0 0 40px rgba(0,255,102,0.15);
+  letter-spacing: 2px;
+  flex: 1;
+}
+.captcha-refresh {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted2);
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.captcha-refresh:hover {
+  color: var(--green);
+  border-color: rgba(0,255,102,0.4);
+  background: var(--green-dim);
+}
+
+.captcha-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.captcha-input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.captcha-input:focus {
+  border-color: rgba(0,255,102,0.5);
+  box-shadow: 0 0 12px rgba(0,255,102,0.12);
+}
+.captcha-input.error {
+  border-color: var(--red);
+  box-shadow: 0 0 12px rgba(255,42,42,0.2);
+  animation: shake 0.35s ease;
+}
+.captcha-input.success {
+  border-color: var(--green);
+  box-shadow: 0 0 12px rgba(0,255,102,0.25);
+}
+
+.captcha-verify {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0,255,102,0.08);
+  border: 1px solid rgba(0,255,102,0.35);
+  border-radius: 6px;
+  color: var(--green);
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 14px;
+}
+.captcha-verify:hover {
+  background: rgba(0,255,102,0.14);
+  box-shadow: 0 0 16px rgba(0,255,102,0.15);
+}
+.captcha-verify:active { transform: scale(0.98); }
+
+.captcha-error-msg {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--red);
+  letter-spacing: 1px;
+  text-align: center;
+  min-height: 14px;
+  transition: opacity 0.2s;
+}
+.captcha-error-msg:empty { opacity: 0; }
+
+.captcha-footer {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.captcha-attempts {
+  color: var(--amber);
+}
 
 /* HEADER */
 header {
@@ -291,9 +516,54 @@ textarea::placeholder { color:var(--muted); }
 .btn-countdown.active,.btn-countdown:hover{border-color:rgba(255,102,0,0.5);color:var(--orange);background:rgba(255,102,0,0.08)}
 .btn-search .dot{background:var(--blue)}
 .btn-search.active,.btn-search:hover{border-color:rgba(51,136,255,0.5);color:var(--blue);background:var(--blue-dim)}
+
+/* Locked state */
+#bottom.locked textarea { opacity: 0.4; pointer-events: none; }
+#bottom.locked #send-btn { opacity: 0.3; pointer-events: none; }
+.lock-badge {
+  display: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--amber);
+  text-align: center;
+  padding: 3px 0 0;
+}
+#bottom.locked .lock-badge { display: block; }
 </style>
 </head>
 <body>
+
+<!-- CAPTCHA OVERLAY -->
+<div id="captcha-overlay">
+  <div class="captcha-box">
+    <div class="captcha-corner tl"></div>
+    <div class="captcha-corner tr"></div>
+    <div class="captcha-corner bl"></div>
+    <div class="captcha-corner br"></div>
+
+    <div class="captcha-tag">ACCESS VERIFICATION</div>
+    <div class="captcha-title">Prove you're human.</div>
+    <div class="captcha-sub">Solve the equation to unlock UMN CORE.<br>This prevents automated token abuse.</div>
+
+    <div class="captcha-equation-wrap">
+      <div class="captcha-equation" id="captcha-eq">— — —</div>
+      <button class="captcha-refresh" title="New equation" onclick="newCaptcha()">↻</button>
+    </div>
+
+    <div class="captcha-input-row">
+      <input class="captcha-input" id="captcha-ans" type="number" placeholder="?" autocomplete="off" inputmode="numeric">
+    </div>
+
+    <button class="captcha-verify" onclick="verifyCaptcha()">▶ VERIFY &amp; ENTER</button>
+    <div class="captcha-error-msg" id="captcha-err"></div>
+
+    <div class="captcha-footer">
+      <span>UMN CORE v2.1 · ANTI-ABUSE</span>
+      <span class="captcha-attempts" id="captcha-tries">3 attempts remaining</span>
+    </div>
+  </div>
+</div>
 
 <header>
   <div class="header-left">
@@ -422,13 +692,14 @@ textarea::placeholder { color:var(--muted); }
 </div>
 
 <!-- BOTTOM -->
-<div id="bottom">
+<div id="bottom" class="locked">
   <div class="input-wrap">
-    <textarea id="input" rows="1" placeholder="Transmit to UMN Core..."></textarea>
+    <textarea id="input" rows="1" placeholder="Complete verification to unlock..."></textarea>
     <button id="send-btn" title="Send">
       <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
   </div>
+  <div class="lock-badge">🔒 LOCKED — COMPLETE CAPTCHA TO ENABLE CHAT</div>
   <div class="action-btns" id="action-btns">
     <button class="action-btn btn-groq active" id="btn-groq" data-panel="groq"><span class="dot"></span>GROQ CORE</button>
     <button class="action-btn btn-forge" id="btn-forge" data-panel="forge"><span class="dot"></span>MELON FORGE</button>
@@ -446,6 +717,134 @@ textarea::placeholder { color:var(--muted); }
 </div>
 
 <script>
+/* ── CAPTCHA ── */
+let captchaAnswer = 0;
+let captchaAttempts = 3;
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_MS = 30000; // 30s lockout after exhausting attempts
+
+const OPS = [
+  (a,b) => ({ eq:`${a} + ${b} = ?`, ans: a+b }),
+  (a,b) => ({ eq:`${a} - ${b} = ?`, ans: a-b }),
+  (a,b) => ({ eq:`${a} × ${b} = ?`, ans: a*b }),
+];
+
+function newCaptcha() {
+  const op = OPS[Math.floor(Math.random()*OPS.length)];
+  // Keep numbers small enough to be easy: 1–12
+  const a = Math.floor(Math.random()*12)+1;
+  const b = Math.floor(Math.random()*12)+1;
+  const { eq, ans } = op(a, b);
+  captchaAnswer = ans;
+  document.getElementById('captcha-eq').textContent = eq;
+  const inp = document.getElementById('captcha-ans');
+  inp.value = '';
+  inp.classList.remove('error','success');
+  document.getElementById('captcha-err').textContent = '';
+  inp.focus();
+}
+
+function updateAttemptsLabel() {
+  const el = document.getElementById('captcha-tries');
+  if (captchaAttempts <= 0) {
+    el.style.color = 'var(--red)';
+    el.textContent = 'LOCKED OUT';
+  } else {
+    el.style.color = captchaAttempts === 1 ? 'var(--red)' : 'var(--amber)';
+    el.textContent = captchaAttempts + ' attempt' + (captchaAttempts !== 1 ? 's' : '') + ' remaining';
+  }
+}
+
+function lockoutCaptcha() {
+  const inp = document.getElementById('captcha-ans');
+  const btn = document.querySelector('.captcha-verify');
+  const ref = document.querySelector('.captcha-refresh');
+  inp.disabled = true;
+  btn.disabled = true;
+  ref.disabled = true;
+  btn.textContent = '⏳ LOCKED — WAIT 30s';
+  document.getElementById('captcha-err').textContent = '// TOO MANY FAILURES. COOLING DOWN...';
+
+  let remaining = 30;
+  const interval = setInterval(() => {
+    remaining--;
+    btn.textContent = `⏳ LOCKED — WAIT ${remaining}s`;
+    if (remaining <= 0) {
+      clearInterval(interval);
+      captchaAttempts = MAX_ATTEMPTS;
+      inp.disabled = false;
+      btn.disabled = false;
+      ref.disabled = false;
+      btn.textContent = '▶ VERIFY & ENTER';
+      document.getElementById('captcha-err').textContent = '';
+      updateAttemptsLabel();
+      newCaptcha();
+    }
+  }, 1000);
+}
+
+function verifyCaptcha() {
+  if (captchaAttempts <= 0) return;
+  const inp = document.getElementById('captcha-ans');
+  const val = parseInt(inp.value, 10);
+
+  if (isNaN(val)) {
+    inp.classList.add('error');
+    document.getElementById('captcha-err').textContent = '// ENTER A NUMBER';
+    setTimeout(() => inp.classList.remove('error'), 600);
+    return;
+  }
+
+  if (val === captchaAnswer) {
+    // SUCCESS
+    inp.classList.add('success');
+    document.getElementById('captcha-err').style.color = 'var(--green)';
+    document.getElementById('captcha-err').textContent = '// ACCESS GRANTED — INITIALISING...';
+    document.querySelector('.captcha-verify').textContent = '✓ VERIFIED';
+    document.querySelector('.captcha-verify').style.color = 'var(--green)';
+    setTimeout(() => {
+      const overlay = document.getElementById('captcha-overlay');
+      overlay.style.animation = 'captchaOut 0.35s ease forwards';
+      setTimeout(() => {
+        overlay.remove();
+        document.getElementById('bottom').classList.remove('locked');
+        const ta = document.getElementById('input');
+        ta.placeholder = 'Transmit to UMN Core...';
+        ta.removeAttribute('disabled');
+        addMsg('// ACCESS GRANTED — CORE UNLOCKED', 'system');
+      }, 340);
+    }, 700);
+  } else {
+    // FAIL
+    captchaAttempts--;
+    updateAttemptsLabel();
+    inp.classList.add('error');
+    const msgs = [
+      '// INCORRECT — TRY AGAIN',
+      '// WRONG ANSWER — CHECK YOUR MATH',
+      '// NEGATIVE — RECALCULATE',
+    ];
+    document.getElementById('captcha-err').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+    setTimeout(() => inp.classList.remove('error'), 600);
+    inp.value = '';
+    if (captchaAttempts <= 0) {
+      setTimeout(lockoutCaptcha, 400);
+    } else {
+      newCaptcha();
+    }
+  }
+}
+
+// Init captcha
+newCaptcha();
+updateAttemptsLabel();
+
+// Enter key on captcha input
+document.getElementById('captcha-ans').addEventListener('keydown', e => {
+  if (e.key === 'Enter') verifyCaptcha();
+});
+
+/* ── MAIN APP ── */
 const chatEl = document.getElementById('chat');
 const inputEl = document.getElementById('input');
 let messages = [], currentMode = 'groq';
@@ -504,7 +903,10 @@ function setMode(mode) {
   document.querySelectorAll('.action-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('btn-'+mode).classList.add('active');
 }
-function handleSend() { currentMode==='groq'?sendGroq():sendForge(); }
+function handleSend() {
+  if (document.getElementById('bottom').classList.contains('locked')) return;
+  currentMode==='groq'?sendGroq():sendForge();
+}
 
 /* MESSAGES */
 function addMsg(content, type) {
